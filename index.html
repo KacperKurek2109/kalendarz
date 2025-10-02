@@ -59,10 +59,10 @@
           const weekNum = getWeekNumber(info.event.start);
           const isEven = weekNum % 2 === 0;
 
-          if (info.event.extendedProps.oddEven === "parzyste" && !isEven) {
+          if (info.event.extendedProps.oddEven === "nieparzyste" && !isEven) {
             info.el.style.display = "none";
           }
-          else if (info.event.extendedProps.oddEven === "nieparzyste" && isEven) {
+          else if (info.event.extendedProps.oddEven === "parzyste" && isEven) {
             info.el.style.display = "none";
           }
           else {
@@ -187,3 +187,4 @@
   </script>
 </body>
 </html>
+
