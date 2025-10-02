@@ -180,6 +180,22 @@
           { title: "PRO Bezpieczeństwo systemów chmurowych", start: "2026-01-24T16:20:00", end: "2026-01-24T19:35:00", backgroundColor: "khaki", textColor:"black"},
           { title: "LAB Infrastruktura i usługi chmur obliczeniowych", start: "2026-01-25T08:00:00", end: "2026-01-25T09:35:00", backgroundColor: "lightgray", textColor:"black"},
 
+          // ===== WYJĄTKI =====
+          // 10.11.2025 – Dzień Niepodległości, wolne
+          { title: "Wolne (Święto Niepodległości)", start: "2025-11-10", allDay: true, display: "background", backgroundColor: "lightgray"},
+        
+          // 11.11.2025 – Święto, wolne
+          { title: "Wolne (Święto)", start: "2025-11-11", allDay: true, display: "background", backgroundColor: "lightgray"},
+          
+          // 22.12.2025 – 07.01.2026 – przerwa świąteczna i noworoczna
+          { title: "Wolne (przerwa świąteczna i noworoczna)", start: "2025-12-22", end: "2026-01-08", allDay: true, display: "background", backgroundColor: "lightgray"},
+          
+          // 08.01.2026 – czwartek jak poniedziałek, ale brak zajęć poniedziałkowych → wolne
+          { title: "Wolne (czwartek jak poniedziałek, brak zajęć)", start: "2026-01-08", allDay: true, display: "background", backgroundColor: "lightgray"},
+          
+          // 09.01.2026 – piątek jak wtorek nieparzysty
+          { title: "LAB.NIEPARZYSTE Bezpieczeństwo systemów chmurowych", start: "2026-01-09T10:00:00", end: "2026-01-09T11:35:00", backgroundColor: "lightgray", textColor:"black"},
+
         ]
       });
       calendar.render();
@@ -187,4 +203,5 @@
   </script>
 </body>
 </html>
+
 
