@@ -7,6 +7,11 @@
   <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.19/index.global.min.js"></script>
   <style>
     .fc-timegrid-event-harness {
+      width: 100% !important;
+      left: 0 !important;
+    }
+
+    .fc-timegrid-event-harness {
       transition: all 0.2s ease-in-out;
       z-index: 1;
     }
@@ -20,12 +25,22 @@
     body { margin: 20px; font-family: Arial, sans-serif; }
     #calendar { max-width: 1200px; margin: 0 auto; }
   </style>
+  
 </head>
 <body>
+  
   <h2 style="text-align:center;">📅 Mój Plan Zajęć</h2>
   <div id="calendar"></div>
 
   <script>
+    function getWeekNumber(date) {
+      const d = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+      const dayNum = d.getUTCDay() || 7;
+      d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+      const yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
+      return Math.ceil((((d - yearStart) / 86400000) + 1)/7);
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
       var calendarEl = document.getElementById('calendar');
       var calendar = new FullCalendar.Calendar(calendarEl, {
@@ -40,63 +55,131 @@
         slotLabelFormat: { hour: '2-digit', minute: '2-digit', hour12: false },
         eventTimeFormat: { hour: '2-digit', minute: '2-digit', hour12: false },
         firstDay: 1, // tydzień zaczyna się w poniedziałek
+        eventDidMount: function(info) {
+          const weekNum = getWeekNumber(info.event.start);
+          const isEven = weekNum % 2 === 0;
+
+          if (info.event.extendedProps.oddEven === "parzyste" && !isEven) {
+            info.el.style.display = "none";
+          }
+          else if (info.event.extendedProps.oddEven === "nieparzyste" && isEven) {
+            info.el.style.display = "none";
+          }
+          else {
+            // jeśli event zostaje → pełna szerokość
+            info.el.parentElement.style.width = "100%";
+          }
+        },
         events: [
 
           // =====================
           // 🔹 Zajęcia tygodniowe
           // =====================
 
-          // LAB - Parzyste
-          { title: "LAB.PARZYSTE Bezpieczeństwo systemów chmurowych", daysOfWeek: [1], startTime: "10:00", endTime: "11:35", backgroundColor: "lightgray", textColor:"black" },
+          // WTOREK
+          { title: "LAB.PARZYSTE Bezpieczeństwo systemów chmurowych", daysOfWeek: [2], startTime: "08:00", endTime: "10:00", backgroundColor: "lightgray", textColor:"black", oddEven: "parzyste"},
+          { title: "LAB.NIEPARZYSTE Bezpieczeństwo systemów chmurowych", daysOfWeek: [2], startTime: "10:00", endTime: "12:00", backgroundColor: "lightgray", textColor:"black", oddEven: "nieparzyste"},
+          { title: "PRO.PARZYSTE Bezpieczeństwo systemów chmurowych", daysOfWeek: [2], startTime: "10:00", endTime: "12:00", backgroundColor: "khaki", textColor:"black", oddEven: "parzyste"},
+          { title: "WYK.PARZYSTE Cyberbezpieczeństwo 1", daysOfWeek: [2], startTime: "12:00", endTime: "13:35", backgroundColor: "lightblue", textColor:"black", oddEven: "parzyste"},
+          { title: "PRO.PARZYSTE Bezpieczeństwo systemów chmurowych", daysOfWeek: [2], startTime: "16:00", endTime: "18:00", backgroundColor: "khaki", textColor:"black", oddEven: "parzyste"},
 
-          // LAB - Nieparzyste
-          { title: "LAB Bezpieczeństwo systemów chmurowych", daysOfWeek: [1], startTime: "10:00", endTime: "11:35", backgroundColor: "lightgray", textColor:"black" },
+          // ŚRODA
+          { title: "LAB.Tydzień Cyberbezpieczeństwo 1", daysOfWeek: [3], startTime: "08:00", endTime: "10:00", backgroundColor: "lightgray", textColor:"black"},
+          { title: "WYK.Tydzień Bezpieczeństwo systemów chmurowych", daysOfWeek: [3], startTime: "16:00", endTime: "18:00", backgroundColor: "lightblue", textColor:"black"},
+          { title: "Spotkanie zespołu ", daysOfWeek: [3], startTime: "10:00", endTime: "12:00", backgroundColor: "lightred", textColor:"black", oddEven: "nieparzyste"},
 
-          // PRO - Parzyste
-          { title: "PRO Bezpieczeństwo systemów chmurowych", daysOfWeek: [2], startTime: "10:00", endTime: "11:35", backgroundColor: "khaki", textColor:"black" },
+          // CZWARTEK
+          { title: "LAB.Tydzień Cyberbezpieczeństwo 1", daysOfWeek: [4], startTime: "14:00", endTime: "16:00", backgroundColor: "lightgray", textColor:"black"},
 
-          // WYK - Parzyste
-          { title: "WYK Cyberbezpieczeństwo 1", daysOfWeek: [2], startTime: "12:00", endTime: "13:35", backgroundColor: "lightblue", textColor:"black" },
+          // PIĄTEK
+          { title: "LAB.PARZYSTE Bezpieczeństwo systemów chmurowych", daysOfWeek: [5], startTime: "08:00", endTime: "10:00", backgroundColor: "lightgray", textColor:"black", oddEven: "parzyste"},
+          { title: "PRO.PARZYSTE Bezpieczeństwo systemów chmurowych", daysOfWeek: [5], startTime: "10:00", endTime: "12:00", backgroundColor: "khaki", textColor:"black", oddEven: "parzyste"},
 
-          // PRO - Parzyste
-          { title: "PRO Bezpieczeństwo systemów chmurowych", daysOfWeek: [2], startTime: "16:00", endTime: "17:35", backgroundColor: "khaki", textColor:"black" },
-
-          // LAB - Tydzień (środa)
-          { title: "LAB Cyberbezpieczeństwo 1", daysOfWeek: [3], startTime: "08:00", endTime: "11:35", backgroundColor: "lightgray", textColor:"black" },
-
-          // WYK - Tydzień (środa)
-          { title: "WYK Bezpieczeństwo systemów chmurowych", daysOfWeek: [3], startTime: "16:00", endTime: "17:35", backgroundColor: "lightblue", textColor:"black" },
-
-          // LAB - Tydzień (czwartek)
-          { title: "LAB Cyberbezpieczeństwo 1", daysOfWeek: [4], startTime: "12:00", endTime: "13:35", backgroundColor: "lightgray", textColor:"black" },
-
-          // LAB - Parzyste (piątek)
-          { title: "LAB Bezpieczeństwo systemów chmurowych", daysOfWeek: [5], startTime: "08:00", endTime: "09:35", backgroundColor: "lightgray", textColor:"black" },
-
-          // PRO - Parzyste (piątek)
-          { title: "PRO Bezpieczeństwo systemów chmurowych", daysOfWeek: [5], startTime: "10:00", endTime: "11:35", backgroundColor: "khaki", textColor:"black" },
 
 
           // =====================
           // 🔹 Weekendowe zjazdy
           // =====================
-          // Piątkowe wykłady
-          { title: "WYK Infrastruktura i usługi chmur (Zjazd 1)", start: "2025-10-03T16:20:00", end: "2025-10-03T17:55:00", backgroundColor: "lightblue" },
-          { title: "WYK Infrastruktura i usługi chmur (Zjazd 3)", start: "2025-10-17T16:20:00", end: "2025-10-17T17:55:00", backgroundColor: "lightblue" },
-          { title: "WYK Infrastruktura i usługi chmur (Zjazd 4)", start: "2025-10-24T16:20:00", end: "2025-10-24T17:55:00", backgroundColor: "lightblue" },
-          { title: "WYK Infrastruktura i usługi chmur (Zjazd 5)", start: "2025-11-14T16:20:00", end: "2025-11-14T17:55:00", backgroundColor: "lightblue" },
-          { title: "WYK Infrastruktura i usługi chmur (Zjazd 6)", start: "2025-11-21T16:20:00", end: "2025-11-21T17:55:00", backgroundColor: "lightblue" },
-          { title: "WYK Infrastruktura i usługi chmur (Zjazd 8)", start: "2025-12-05T16:20:00", end: "2025-12-05T17:55:00", backgroundColor: "lightblue" },
-          { title: "WYK Infrastruktura i usługi chmur (Zjazd 10)", start: "2025-12-19T16:20:00", end: "2025-12-19T17:55:00", backgroundColor: "lightblue" },
-          { title: "WYK Infrastruktura i usługi chmur (Zjazd 11)", start: "2026-01-09T16:20:00", end: "2026-01-09T17:55:00", backgroundColor: "lightblue" },
-          { title: "WYK Infrastruktura i usługi chmur (Zjazd 12)", start: "2026-01-23T16:20:00", end: "2026-01-23T17:55:00", backgroundColor: "lightblue" },
+          // Zjazd 1 (03–05.10.2025)
+          { title: "WYK Infrastruktura i usługi chmur obliczeniowych (online)", start: "2025-10-03T16:20:00", end: "2025-10-03T17:55:00", backgroundColor: "lightblue", textColor:"black"},
+          { title: "WYK Bezpieczeństwo systemów chmurowych", start: "2025-10-04T08:00:00", end: "2025-10-04T09:35:00", backgroundColor: "lightblue", textColor:"black"},
+          { title: "LAB Cyberbezpieczeństwo", start: "2025-10-04T13:00:00", end: "2025-10-04T14:35:00", backgroundColor: "lightgray", textColor:"black"},
+          { title: "LAB Infrastruktura i usługi chmur obliczeniowych", start: "2025-10-05T08:00:00", end: "2025-10-05T09:35:00", backgroundColor: "lightgray", textColor:"black"},
 
-          // Sobotnie zajęcia – przykłady (musisz uzupełnić wszystkie wg swojej listy!)
-          { title: "WYK Bezpieczeństwo systemów chmurowych (Zjazd 3)", start: "2025-10-18T08:00:00", end: "2025-10-18T09:35:00", backgroundColor: "lightblue" },
-          { title: "LAB + PRO Bezpieczeństwo systemów chmurowych (Zjazd 3)", start: "2025-10-18T14:40:00", end: "2025-10-18T19:35:00", backgroundColor: "khaki" },
+          // Zjazd 2 (10–12.10.2025) – wykładowy, brak zajęć
 
-          // Niedziela
-          { title: "LAB Infrastruktura i usługi chmur (Zjazd 3)", start: "2025-10-19T08:00:00", end: "2025-10-19T09:35:00", backgroundColor: "lightgray" }
+
+          // Zjazd 3 (17–19.10.2025)
+          { title: "WYK Infrastruktura i usługi chmur obliczeniowych (online)", start: "2025-10-17T16:20:00", end: "2025-10-17T17:55:00", backgroundColor: "lightblue", textColor:"black"},
+          { title: "WYK Bezpieczeństwo systemów chmurowych", start: "2025-10-18T08:00:00", end: "2025-10-18T09:35:00", backgroundColor: "lightblue", textColor:"black"},
+          { title: "WYK Cyberbezpieczeństwo", start: "2025-10-18T11:20:00", end: "2025-10-18T12:55:00", backgroundColor: "lightblue", textColor:"black"},
+          { title: "LAB Cyberbezpieczeństwo", start: "2025-10-18T13:00:00", end: "2025-10-18T14:35:00", backgroundColor: "lightgray", textColor:"black"},
+          { title: "LAB Bezpieczeństwo systemów chmurowych", start: "2025-10-18T14:40:00", end: "2025-10-18T16:15:00", backgroundColor: "lightgray", textColor:"black"},
+          { title: "PRO Bezpieczeństwo systemów chmurowych", start: "2025-10-18T16:20:00", end: "2025-10-18T19:35:00", backgroundColor: "khaki", textColor:"black"},
+          { title: "LAB Infrastruktura i usługi chmur obliczeniowych", start: "2025-10-19T08:00:00", end: "2025-10-19T09:35:00", backgroundColor: "lightgray", textColor:"black"},
+
+          // Zjazd 4 (24–26.10.2025)
+          { title: "WYK Infrastruktura i usługi chmur obliczeniowych (online)", start: "2025-10-24T16:20:00", end: "2025-10-24T17:55:00", backgroundColor: "lightblue", textColor:"black"},
+          { title: "WYK Bezpieczeństwo systemów chmurowych", start: "2025-10-25T08:00:00", end: "2025-10-25T09:35:00", backgroundColor: "lightblue", textColor:"black"},
+          { title: "LAB Cyberbezpieczeństwo", start: "2025-10-25T13:00:00", end: "2025-10-25T14:35:00", backgroundColor: "lightgray", textColor:"black"},
+          { title: "LAB Bezpieczeństwo systemów chmurowych", start: "2025-10-25T14:40:00", end: "2025-10-25T16:15:00", backgroundColor: "lightgray", textColor:"black"},
+          { title: "PRO Bezpieczeństwo systemów chmurowych", start: "2025-10-25T16:20:00", end: "2025-10-25T19:35:00", backgroundColor: "khaki", textColor:"black"},
+          { title: "LAB Infrastruktura i usługi chmur obliczeniowych", start: "2025-10-26T08:00:00", end: "2025-10-26T09:35:00", backgroundColor: "lightgray", textColor:"black"},
+
+          // Zjazd 5 (14–16.11.2025)
+          { title: "WYK Infrastruktura i usługi chmur obliczeniowych (online)", start: "2025-11-14T16:20:00", end: "2025-11-14T17:55:00", backgroundColor: "lightblue", textColor:"black"},
+          { title: "WYK Bezpieczeństwo systemów chmurowych", start: "2025-11-15T08:00:00", end: "2025-11-15T09:35:00", backgroundColor: "lightblue", textColor:"black"},
+          { title: "WYK Cyberbezpieczeństwo", start: "2025-11-15T11:20:00", end: "2025-11-15T12:55:00", backgroundColor: "lightblue", textColor:"black"},
+          { title: "LAB Cyberbezpieczeństwo", start: "2025-11-15T13:00:00", end: "2025-11-15T14:35:00", backgroundColor: "lightgray", textColor:"black"},
+          { title: "LAB Infrastruktura i usługi chmur obliczeniowych", start: "2025-11-16T08:00:00", end: "2025-11-16T09:35:00", backgroundColor: "lightgray", textColor:"black"},
+
+          // Zjazd 6 (21–23.11.2025)
+          { title: "WYK Infrastruktura i usługi chmur obliczeniowych (online)", start: "2025-11-21T16:20:00", end: "2025-11-21T17:55:00", backgroundColor: "lightblue", textColor:"black"},
+          { title: "WYK Bezpieczeństwo systemów chmurowych", start: "2025-11-22T08:00:00", end: "2025-11-22T09:35:00", backgroundColor: "lightblue", textColor:"black"},
+          { title: "LAB Cyberbezpieczeństwo", start: "2025-11-22T13:00:00", end: "2025-11-22T14:35:00", backgroundColor: "lightgray", textColor:"black"},
+          { title: "LAB Bezpieczeństwo systemów chmurowych", start: "2025-11-22T14:40:00", end: "2025-11-22T16:15:00", backgroundColor: "lightgray", textColor:"black"},
+          { title: "PRO Bezpieczeństwo systemów chmurowych", start: "2025-11-22T16:20:00", end: "2025-11-22T19:35:00", backgroundColor: "khaki", textColor:"black"},
+          { title: "LAB Infrastruktura i usługi chmur obliczeniowych", start: "2025-11-23T08:00:00", end: "2025-11-23T09:35:00", backgroundColor: "lightgray", textColor:"black"},
+
+          // Zjazd 7 (28–30.11.2025) – wykładowy, brak zajęć
+
+
+          // Zjazd 8 (05–07.12.2025)
+          { title: "WYK Infrastruktura i usługi chmur obliczeniowych (online)", start: "2025-12-05T16:20:00", end: "2025-12-05T17:55:00", backgroundColor: "lightblue", textColor:"black"},
+          { title: "WYK Bezpieczeństwo systemów chmurowych", start: "2025-12-06T08:00:00", end: "2025-12-06T09:35:00", backgroundColor: "lightblue", textColor:"black"},
+          { title: "WYK Cyberbezpieczeństwo", start: "2025-12-06T11:20:00", end: "2025-12-06T12:55:00", backgroundColor: "lightblue", textColor:"black"},
+          { title: "LAB Cyberbezpieczeństwo", start: "2025-12-06T13:00:00", end: "2025-12-06T14:35:00", backgroundColor: "lightgray", textColor:"black"},
+          { title: "LAB Bezpieczeństwo systemów chmurowych", start: "2025-12-06T14:40:00", end: "2025-12-06T16:15:00", backgroundColor: "lightgray", textColor:"black"},
+          { title: "PRO Bezpieczeństwo systemów chmurowych", start: "2025-12-06T16:20:00", end: "2025-12-06T19:35:00", backgroundColor: "khaki", textColor:"black"},
+          { title: "LAB Infrastruktura i usługi chmur obliczeniowych", start: "2025-12-07T08:00:00", end: "2025-12-07T09:35:00", backgroundColor: "lightgray", textColor:"black"},
+
+          // Zjazd 9 (12–14.12.2025) – wykładowy, brak zajęć
+
+
+          // Zjazd 10 (19–21.12.2025)
+          { title: "WYK Infrastruktura i usługi chmur obliczeniowych (online)", start: "2025-12-19T16:20:00", end: "2025-12-19T17:55:00", backgroundColor: "lightblue", textColor:"black"},
+          { title: "WYK Bezpieczeństwo systemów chmurowych", start: "2025-12-20T08:00:00", end: "2025-12-20T09:35:00", backgroundColor: "lightblue", textColor:"black"},
+          { title: "LAB Cyberbezpieczeństwo", start: "2025-12-20T13:00:00", end: "2025-12-20T14:35:00", backgroundColor: "lightgray", textColor:"black"},
+          { title: "LAB Infrastruktura i usługi chmur obliczeniowych", start: "2025-12-21T08:00:00", end: "2025-12-21T09:35:00", backgroundColor: "lightgray", textColor:"black"},
+
+          // Zjazd 11 (09–11.01.2026) – wyjątek LAB Cyber
+          { title: "WYK Infrastruktura i usługi chmur obliczeniowych (online)", start: "2026-01-09T16:20:00", end: "2026-01-09T17:55:00", backgroundColor: "lightblue", textColor:"black"},
+          { title: "WYK Bezpieczeństwo systemów chmurowych", start: "2026-01-10T08:00:00", end: "2026-01-10T09:35:00", backgroundColor: "lightblue", textColor:"black"},
+          { title: "WYK Cyberbezpieczeństwo", start: "2026-01-10T11:20:00", end: "2026-01-10T12:55:00", backgroundColor: "lightblue", textColor:"black"},
+          { title: "LAB Cyberbezpieczeństwo", start: "2026-01-10T11:20:00", end: "2026-01-10T12:55:00", backgroundColor: "lightgray", textColor:"black"},
+          { title: "LAB Bezpieczeństwo systemów chmurowych", start: "2026-01-10T14:40:00", end: "2026-01-10T16:15:00", backgroundColor: "lightgray", textColor:"black"},
+          { title: "PRO Bezpieczeństwo systemów chmurowych", start: "2026-01-10T16:20:00", end: "2026-01-10T19:35:00", backgroundColor: "khaki", textColor:"black"},
+          { title: "LAB Infrastruktura i usługi chmur obliczeniowych", start: "2026-01-11T08:00:00", end: "2026-01-11T09:35:00", backgroundColor: "lightgray", textColor:"black"},
+
+          // Zjazd 12 (23–25.01.2026)
+          { title: "WYK Infrastruktura i usługi chmur obliczeniowych (online)", start: "2026-01-23T16:20:00", end: "2026-01-23T17:55:00", backgroundColor: "lightblue", textColor:"black"},
+          { title: "WYK Bezpieczeństwo systemów chmurowych", start: "2026-01-24T08:00:00", end: "2026-01-24T09:35:00", backgroundColor: "lightblue", textColor:"black"},
+          { title: "WYK Cyberbezpieczeństwo", start: "2026-01-24T12:10:00", end: "2026-01-24T12:55:00", backgroundColor: "lightblue", textColor:"black"},
+          { title: "LAB Cyberbezpieczeństwo", start: "2026-01-24T13:00:00", end: "2026-01-24T14:35:00", backgroundColor: "lightgray", textColor:"black"},
+          { title: "LAB Bezpieczeństwo systemów chmurowych", start: "2026-01-24T14:40:00", end: "2026-01-24T16:15:00", backgroundColor: "lightgray", textColor:"black"},
+          { title: "PRO Bezpieczeństwo systemów chmurowych", start: "2026-01-24T16:20:00", end: "2026-01-24T19:35:00", backgroundColor: "khaki", textColor:"black"},
+          { title: "LAB Infrastruktura i usługi chmur obliczeniowych", start: "2026-01-25T08:00:00", end: "2026-01-25T09:35:00", backgroundColor: "lightgray", textColor:"black"},
+
         ]
       });
       calendar.render();
