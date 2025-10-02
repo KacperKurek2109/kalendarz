@@ -8,6 +8,16 @@
   <style>
     body { margin: 20px; font-family: Arial, sans-serif; }
     #calendar { max-width: 1200px; margin: 0 auto; }
+    .fc-event {
+      transition: all 0.2s ease-in-out;
+      z-index: 1;
+    }
+
+    .fc-event:hover {
+      flex: 0 0 100% !important; /* Rozciąga na całą szerokość */
+      max-width: 100% !important;
+      z-index: 10; /* żeby był nad innymi */
+    }
   </style>
 </head>
 <body>
@@ -93,3 +103,4 @@
   </script>
 </body>
 </html>
+
